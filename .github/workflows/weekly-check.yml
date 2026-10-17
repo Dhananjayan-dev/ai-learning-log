@@ -1,0 +1,19 @@
+name: Weekly check-in
+on:
+  schedule:
+    - cron: "0 3 * * 1"   # Mondays 03:00 UTC
+  workflow_dispatch:       # lets you run it by hand from the Actions tab
+permissions:
+  issues: write
+jobs:
+  open-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open this week's checklist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          WEEK=$(date +%G-W%V)
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "Week $WEEK check-in" \
+            --body $'- [ ] Plan this week\'s lab\n- [ ] Commit on at least 3 days\n- [ ] Write weeks/ log entry on Sunday\n- [ ] Update the phase tracker in README'
